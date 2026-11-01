@@ -19,7 +19,15 @@ def execute_query(conn, query):
     except Error as e:
         print(f"The error '{e}' occurred")
 
-
+def execute_read_query(conn, query):
+    cursor = conn.cursor()
+    result = None
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+    except Error as e:
+        print(f"The error '{e}' occurred")
 
 
 connection = create_connection("my_database.db")
@@ -46,4 +54,29 @@ CREATE TABLE IF NOT EXISTS posts (
 
 execute_query(connection, user_table_query)
 execute_query(connection, create_posts_table)
+
+create_users_query = """
+INSERT INTO users (username, email) VALUES
+  ('user1', 'user1@example.com'),
+  ('user2', 'user2@example.com')
+;
+"""
+#execute_query(connection, create_users_query)   
+
+select_users_query = "SELECT * from users"
+users = execute_read_query(connection, select_users_query)
+print(users)
+
+select_users_query_specific = "SELECT * from users WHERE username = 'user1'"
+specific_user = execute_read_query(connection, select_users_query_specific)
+print(specific_user)
+
+select_users_query_limit = "SELECT * from users ORDER BY id DESC LIMIT 1 "
+limited_user = execute_read_query(connection, select_users_query_limit) 
+print(limited_user)
+
+
+
+
+
 
