@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL UNIQUE,
+  score INTEGER DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 """
@@ -76,7 +77,24 @@ limited_user = execute_read_query(connection, select_users_query_limit)
 print(limited_user)
 
 
+update_user_query = """
+UPDATE users SET email = 'updated_user1@example.com' WHERE username = 'user1'
+;
+"""
+execute_query(connection, update_user_query)   
 
+delete_user_query = """
+DELETE FROM users WHERE username = 'user2'   """    
+execute_query(connection, delete_user_query)
 
+old_score_query = "SELECT score FROM users WHERE username = 'user1'"
+old_score = execute_read_query(connection, old_score_query)
+print(f"Old score for user1: {old_score[0][0]}")
+new_score = old_score[0][0] + 10
+increase_score_query = f"""
+UPDATE users SET score = {new_score} WHERE username = 'user1'
+"""
+
+execute_query(connection, increase_score_query)
 
 
